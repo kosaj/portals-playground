@@ -37,6 +37,7 @@ function WindowContainer({ id, portalNode }: WindowContainerProps) {
           {id}
         </div>
         <iframe
+          key={id}
           src="https://kosaj.github.io/mbp-queue/"
           height={"100px"}
           width={"100%"}
