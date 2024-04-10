@@ -1,52 +1,26 @@
-import { useEffect } from "react";
 import useAppStore from "./+store/app.store";
+import Container from "./components/container";
 
 export function App() {
-  const [
-    something,
-    values,
-    updateValues,
-    updateValuesWithReplace,
-    updateSomething,
-    updateSomethingWithReplace,
-    reset,
-  ] = useAppStore((state) => [
-    state.something,
-    state.values,
-    state.updateValues,
-    state.updateValuesWithReplace,
-    state.updateSomething,
-    state.updateSomethingWithReplace,
-    state.reset,
+  const [containers, addContainer] = useAppStore((state) => [
+    state.containers,
+    state.addContainer,
   ]);
-
-  useEffect(() => {
-    console.log(something);
-    // updateValues([0, 1, 2, 3, 4, 5]);
-
-    return () => {
-      console.log("cleanup");
-    };
-  }, [something, updateValues]);
-
-  useEffect(() => {
-    return () => {
-      reset();
-    };
-  }, [reset]);
 
   return (
     <>
-      <div className="inline-flex flex-col">
-        <button onClick={() => updateValues([0, 1, 2])}>updateValues</button>
-        <button onClick={() => updateValuesWithReplace([0, 1, 2])}>
-          updateValuesWithReplace
-        </button>
-        <button onClick={() => updateSomething("meh")}>updateSomething</button>
-        <button onClick={() => updateSomethingWithReplace("czapa")}>
-          updateSomethingWithReplace
-        </button>
+      <div>Total: {containers.length}</div>
+      <div className="flex">
+        <button onClick={() => addContainer()}>Add container</button>
       </div>
+
+      {containers.length > 0 && (
+        <div className="flex flex-col gap-1 p-8">
+          {containers.map((container) => (
+            <Container key={container.id} id={container.id} />
+          ))}
+        </div>
+      )}
     </>
   );
 }

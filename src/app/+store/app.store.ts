@@ -1,37 +1,38 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
+type Container = {
+  id: string;
+};
+
 type StoreState = {
-  something: string;
-  values: number[];
+  containers: Container[];
+  windows: any[];
 };
 
 type StoreActions = {
-  updateValues: (values: number[]) => void;
-  updateValuesWithReplace: (values: number[]) => void;
-  updateSomething: (value: string) => void;
-  updateSomethingWithReplace: (value: string) => void;
-  reset: () => void;
+  addContainer: () => void;
+  removeContainer: (id: string) => void;
 };
 
 type Store = StoreState & StoreActions;
 
 const initialStoreState: StoreState = {
-  something: "initial",
-  values: [],
+  containers: [],
+  windows: [],
 };
 
 const useAppStore = create<Store>()(
   devtools((set) => ({
     ...initialStoreState,
-    updateValues: (values: number[]) => set({ values }, false, "updateValues"),
-    updateValuesWithReplace: (values: number[]) =>
-      set((state) => ({ ...state, values }), true, "updateValuesWithReplace"),
-    updateSomething: (value) =>
-      set(() => ({ something: value }), false, "updateSomething"),
-    updateSomethingWithReplace: (value) =>
-      set(() => ({ something: value }), false, "updateSomethingWithReplace"),
-    reset: () => set({ ...initialStoreState }, false, "reset"),
+    addContainer: () =>
+      set((state) => ({
+        containers: [...state.containers, { id: self.crypto.randomUUID() }],
+      })),
+    removeContainer: (id: string) =>
+      set((state) => ({
+        containers: state.containers.filter((container) => container.id !== id),
+      })),
   }))
 );
 
