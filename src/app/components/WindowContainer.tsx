@@ -8,14 +8,25 @@ type WindowContainerProps = {
 };
 
 function WindowContainer({ id, portalNode }: WindowContainerProps) {
-  const [remove, freeWindow] = useAppStore((state) => [
+  const [remove, freeWindow, window] = useAppStore((state) => [
     state.remove,
     state.freeWindow,
+    state.windows,
   ]);
+
+  const parentId = window.find((w) => w.id === id)?.parentId;
 
   useEffect(() => {
     console.log("WindowContainer mounted", id);
+
+    return () => {
+      console.log("WindowContainer unmounted", id);
+    };
   }, []);
+
+  useEffect(() => {
+    console.log("WindowContainer updated - [", id, "] - [", parentId, "]");
+  }, [id, parentId]);
 
   return (
     <>
@@ -25,6 +36,11 @@ function WindowContainer({ id, portalNode }: WindowContainerProps) {
           <button onClick={() => freeWindow(id)}>Free</button>
           {id}
         </div>
+        <iframe
+          src="https://kosaj.github.io/mbp-queue/"
+          height={"100px"}
+          width={"100%"}
+        />
       </InPortal>
     </>
   );
