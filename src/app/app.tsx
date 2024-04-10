@@ -11,7 +11,7 @@ export function App() {
 
   return (
     <>
-      <div className="flex gap-5">
+      <div className="flex justify-end gap-5">
         <button onClick={() => add("containers")}>Add container</button>
         <button onClick={() => add("windows")}>Add window</button>
       </div>
@@ -29,7 +29,11 @@ export function App() {
       {windows.length > 0 && (
         <div className="flex flex-col gap-1 p-8">
           {windows.map((window) => (
-            <WindowContainer key={window.id} id={window.id} />
+            <WindowContainer
+              key={window.id}
+              id={window.id}
+              portalNode={window.portalNode}
+            />
           ))}
         </div>
       )}
