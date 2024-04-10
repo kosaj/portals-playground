@@ -1,18 +1,24 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-type Container = {
+type ContainerItem = {
   id: string;
 };
 
+type WindowItem = {
+  id: string;
+  parentId?: string;
+};
+
 type StoreState = {
-  containers: Container[];
-  windows: any[];
+  containers: ContainerItem[];
+  windows: WindowItem[];
 };
 
 type StoreActions = {
-  addContainer: () => void;
-  removeContainer: (id: string) => void;
+  add: (type: "containers" | "windows") => void;
+  remove: (type: "containers" | "windows", id: string) => void;
+  freeWindow: (id: string) => void;
 };
 
 type Store = StoreState & StoreActions;
@@ -25,13 +31,21 @@ const initialStoreState: StoreState = {
 const useAppStore = create<Store>()(
   devtools((set) => ({
     ...initialStoreState,
-    addContainer: () =>
+    add: (type: "containers" | "windows") =>
       set((state) => ({
-        containers: [...state.containers, { id: self.crypto.randomUUID() }],
+        [type]: [...state[type], { id: self.crypto.randomUUID() }],
       })),
-    removeContainer: (id: string) =>
+    remove: (type: "containers" | "windows", id: string) =>
       set((state) => ({
-        containers: state.containers.filter((container) => container.id !== id),
+        [type]: state[type].filter(
+          (key: ContainerItem | WindowItem) => key.id !== id
+        ),
+      })),
+    freeWindow: (id: string) =>
+      set((state) => ({
+        windows: state.windows.map((window) =>
+          window.parentId === id ? { ...window, parentId: undefined } : window
+        ),
       })),
   }))
 );
